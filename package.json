@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
+"scripts": {
     "start": "node src/server.js",
     "test:unit": "jest tests/unit --coverage",
-    "test:int": "jest tests/integration --runInBand",
-    "test:e2e": "playwright test"
+    "test:integration": "jest tests/integration --runInBand",
+    "test": "npm run test:unit && npm run test:integration"
   },
   "jest": {
     "testPathIgnorePatterns": [
