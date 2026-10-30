@@ -17,4 +17,8 @@ describe('Panier', () => {
     const items = [{ prix: 10, quantite: 0 }, { prix: 5, quantite: 2 }];
     expect(total(items)).toBe(10);
   });
+  test('refuse un prix négatif', () => {
+    const articles = [{ prix: -10, quantite: 1 }];
+    expect(() => total(articles)).toThrow('Prix négatif interdit');
+  });
 });
