@@ -43,4 +43,24 @@ describe('Integration - /produits', () => {
 
     expect(res.statusCode).toBe(400);
   });
+
+  test('retourne 404 pour un produit inconnu', async () => {
+    const res = await request(app).get('/produits/999');
+    expect(res.status).toBe(404);
+  });
+
+  test('retourne 400 pour un identifiant invalide', async () => {
+    const res = await request(app).get('/produits/abc');
+    expect(res.status).toBe(400);
+  });
+
+  test('résiste à une tentative d\'injection SQL', async () => {
+    const attaque = encodeURIComponent('1; DROP TABLE produits;--');
+    const res = await request(app).get('/produits/' + attaque);
+
+    expect(res.status).toBe(400);
+    // La table doit toujours exister et la base reste intègre
+    const { rows } = await pool.query('SELECT count(*) FROM produits');
+    expect(Number(rows[0].count)).toBeGreaterThanOrEqual(0);
+  });
 });
