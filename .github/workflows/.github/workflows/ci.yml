@@ -1,51 +1,40 @@
-name: DevSecOps CI Pipeline
-
-on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+name: CI
+on: [push, pull_request]
 
 jobs:
-  test:
+  unit:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run test:unit
 
+  integration:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
     services:
-      postgres:
-        image: postgres:15-alpine
+      db:
+        image: postgres:16-alpine
         env:
-          POSTGRES_USER: user_test
-          POSTGRES_PASSWORD: password_test
-          POSTGRES_DB: db_test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: testdb
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U user_test -d db_test"
-          --health-interval 10s
+          --health-cmd "pg_isready -U test"
+          --health-interval 5s
           --health-timeout 5s
-          --health-retries 5
-
+          --health-retries 10
     steps:
-      - name: Checkout le code
-        uses: actions/checkout@v3
-
-      - name: Configuration de Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 20
           cache: 'npm'
-
-      - name: Installation des dépendances
-        run: npm ci
-
-      - name: Exécution des tests unitaires
-        run: npm run test:unit
-
-      - name: Exécution des tests d'intégration
-        run: npm run test:integration
-        env:
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_USER: user_test
-          DB_PASSWORD: password_test
-          DB_NAME: db_test
+      - run: npm ci
+      - run: npm run test:int
