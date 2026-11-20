@@ -8,7 +8,6 @@
     "test:integration": "jest tests/integration --runInBand",
     "test:int": "jest tests/integration --runInBand",
     "test": "npm run test:unit && npm run test:integration",
-    "test:cov": "jest --runInBand --coverage",
     "test:cov": "jest --runInBand --coverage"
   },
   "dependencies": {
