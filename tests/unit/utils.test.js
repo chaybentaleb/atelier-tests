@@ -1,3 +1,5 @@
+const request = require('supertest');
+const app = require('../../src/app');
 const { genererToken, classer } = require('../../src/utils');
 
 describe('classer()', () => {
@@ -12,11 +14,11 @@ describe('classer()', () => {
 });
 
 describe('genererToken()', () => {
-  test('retourne 32 caractères hexadécimaux', () => {
+  test('retourne 32 caractÃ¨res hexadÃ©cimaux', () => {
     expect(genererToken()).toMatch(/^[0-9a-f]{32}$/);
   });
 
-  test('deux appels donnent deux jetons différents', () => {
+  test('deux appels donnent deux jetons diffÃ©rents', () => {
     expect(genererToken()).not.toBe(genererToken());
   });
   test('ne divulgue pas la technologie du serveur', async () => {
