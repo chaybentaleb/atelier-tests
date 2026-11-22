@@ -2,6 +2,7 @@ const express = require('express');
 const { pool } = require('./db');
 
 const app = express();
+app.disable('x-powered-by');
 app.use(express.json());
 
 // GET /produits - Liste tous les produits
